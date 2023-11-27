@@ -295,8 +295,12 @@ async def some_actions(event):
         redis_data["redis_uri"], redis_data["redis_port"], redis_data["redis_password"]
     )
     status, message = perform_redis_action(connection, method, key, value)
-    await event.reply(f"**{status}**\n\n```{message}```")
-
+    if len(message) > 4000:
+        with open("message.txt", "w", encoding="utf-8") as file:
+            file.write(message)
+        await event.reply(file="message.txt")
+    else:
+        await event.reply(f"**{status}**\n\n```{message}```")
 
 @client.on(
     events.NewMessage(
